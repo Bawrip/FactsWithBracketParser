@@ -11,6 +11,7 @@ public class OrExpression implements IExpression {
         this.expressions = new ArrayList<>(expressions);
     }
 
+    @Override
     public boolean evaluate(Set<String> facts) {
         for (IExpression expression : expressions) {
             if (expression.evaluate(facts))

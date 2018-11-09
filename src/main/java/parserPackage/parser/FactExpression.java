@@ -9,6 +9,7 @@ public class FactExpression implements IExpression {
         this.fact = fact;
     }
 
+    @Override
     public boolean evaluate(Set<String> facts) {
         return facts.contains(fact);
     }

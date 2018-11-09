@@ -7,12 +7,14 @@ public class TestDB {
     private double weight;
     private int x;
 
+
     public TestDB() {
         id = 0;
         name = "";
         price = 0.0;
         weight = 0.0;
         x = 42;
+
     }
 
     public void test() {

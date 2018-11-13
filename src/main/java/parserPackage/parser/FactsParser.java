@@ -1,9 +1,16 @@
 package parserPackage.parser;
 
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import parserPackage.dbTools.Expression;
+import parserPackage.dbTools.mapper.ExpressionMapper;
 import parserPackage.exceptions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -80,6 +87,32 @@ public class FactsParser {
         return new Facts(rules, facts);
     }
 
+    public Facts parseUnitDB(Integer id)
+            throws IOException,
+            FactsExpectedException,
+            RuleExpectedException,
+            IncorrectRightPartOfRuleException,
+            IncorrectLeftPartOfRuleException {
+
+        SqlSessionFactory sqlSessionFactory;
+        ExpressionMapper expressionMapper;
+        Reader reader = null;
+
+        reader = Resources.getResourceAsReader("mybatis-config.xml");
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        expressionMapper = sqlSessionFactory.openSession().getMapper(ExpressionMapper.class);
+
+        LinkedList<Rule> rules = new LinkedList<>();
+        ArrayList<Expression> expressions = expressionMapper.getExpressions(id);
+        for (Expression exp : expressions) {
+            line = exp.getId();
+            rules.add(ruleToInternalFormat(exp.getExp(), exp.getFact()));
+        }
+
+        String[] facts = parseFacts(expressionMapper.getFacts(id));
+        return new Facts(rules, facts);
+    }
+
     //обработка правила
     private Rule ruleToInternalFormat(String ruleStr)
             throws RuleExpectedException,
@@ -93,6 +126,20 @@ public class FactsParser {
 
         String stringExpression = splitRule[0];
         String fact = splitRule[1].trim();
+
+        if (!FACT_PATTERN.matcher(fact).matches()) {
+            throw new IncorrectRightPartOfRuleException(line);
+        }
+
+        charIndex = 0;
+        IExpression expression = parseExpression(stringExpression.toCharArray(), false);
+        return new Rule(expression, fact);
+    }
+
+    private Rule ruleToInternalFormat(String stringExpression, String fact)
+            throws RuleExpectedException,
+            IncorrectRightPartOfRuleException,
+            IncorrectLeftPartOfRuleException {
 
         if (!FACT_PATTERN.matcher(fact).matches()) {
             throw new IncorrectRightPartOfRuleException(line);

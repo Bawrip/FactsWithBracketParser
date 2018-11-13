@@ -1,0 +1,24 @@
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="parserPackage.dbTools.mapper.ExpressionMapper">
+    <resultMap id="ExpressionResult" type="parserPackage.dbTools.Expression">
+        <id property="id" column="Exp_id"/>
+        <result property="exp" column="Expression"/>
+        <result property="fact" column="Fact"/>
+        <result property="unitId" column="Unit_id"/>
+    </resultMap>
+    <select
+            id="getExpressions"
+            parameterType="java.lang.Integer"
+            resultMap="ExpressionResult"
+            resultType="parserPackage.dbTools.Expression">
+          SELECT *
+          FROM "Expressions"
+          WHERE "Expressions"."Unit_id" = #{id}
+    </select>
+    <select id="getFacts"
+            resultType="java.lang.String">
+        SELECT "FactsPool"."Facts"
+        FROM "FactsPool"
+        WHERE "FactsPool"."Unit_id" = 1
+    </select>
+</mapper>

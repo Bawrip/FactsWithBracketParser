@@ -1,4 +1,4 @@
-package parserPackage.exceptions;
+package parserPackage.exceptions.txt;
 
 public class IncorrectRightPartOfRuleException extends Exception {
     private int line;
@@ -7,7 +7,8 @@ public class IncorrectRightPartOfRuleException extends Exception {
         this.line = line;
     }
 
+    @Override
     public String getMessage() {
-        return "Line " + line + ". Invalid fact in rule.";
+        return "Line " + line + " is incorrect. " + "Invalid fact in rule.";
     }
 }

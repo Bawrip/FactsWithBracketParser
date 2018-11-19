@@ -1,4 +1,4 @@
-package parserPackage.exceptions;
+package parserPackage.exceptions.txt;
 
 public class IncorrectLeftPartOfRuleException extends Exception {
     private int line;
@@ -7,6 +7,7 @@ public class IncorrectLeftPartOfRuleException extends Exception {
         this.line = line;
     }
 
+    @Override
     public String getMessage() {
         return "Line " + line + " is incorrect. Invalid logical expression in rule.";
     }

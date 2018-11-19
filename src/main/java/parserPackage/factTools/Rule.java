@@ -1,4 +1,4 @@
-package parserPackage.parser;
+package parserPackage.factTools;
 
 import java.util.Set;
 
@@ -7,11 +7,14 @@ public class Rule {
     private IExpression rule;
     private String fact;
 
-    Rule(IExpression expression, String fact) {
+    public Rule(IExpression expression, String fact) {
         rule = expression;
         this.fact = fact;
     }
 
+    public IExpression getRule() {
+        return rule;
+    }
 
     public String getFact() {
         return fact;

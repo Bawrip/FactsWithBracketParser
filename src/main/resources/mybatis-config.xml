@@ -3,15 +3,17 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-
+    <settings>
+        <setting name="callSettersOnNulls" value="true"/>
+    </settings>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="UNPOOLED">
                 <property name="driver"                           value="org.postgresql.Driver"/>
-                <property name="url"                              value="jdbc:postgresql://localhost:5433/FactsAndExpressions"/>
-                <property name="username"                         value="postgres"/>
-                <property name="password"                         value="1703oxxxi"/>
+                <property name="url"                              value="${url}"/>
+                <property name="username"                         value="${username}"/>
+                <property name="password"                         value="${password}"/>
                 <!-- set transaction isolation level to 2, TRANSACTION_READ_COMMITTED, PostgreSQL's default -->
                 <property name="defaultTransactionIsolationLevel" value="2"/>
                 <!-- set pg_stat_activity.application_name for this connection -->
@@ -19,7 +21,13 @@
             </dataSource>
         </environment>
     </environments>
+
     <mappers><!--в данном блоке необходимо описать маперы, которые используются в проекте-->
         <mapper resource="Mapper\ExpressionMapper.xml"/>
+        <mapper resource="Mapper\FactMapper.xml"/>
+        <mapper resource="Mapper\KnownFactsMapper.xml"/>
+        <mapper resource="Mapper\RulesMapper.xml"/>
+        <mapper resource="Mapper\FactsInsertMapper.xml"/>
     </mappers>
+
 </configuration>

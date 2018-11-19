@@ -1,24 +1,35 @@
 <!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="parserPackage.dbTools.mapper.ExpressionMapper">
-    <resultMap id="ExpressionResult" type="parserPackage.dbTools.Expression">
+    <resultMap id="ExpressionResult" type="parserPackage.dbTools.IdKeeper">
         <id property="id" column="Exp_id"/>
-        <result property="exp" column="Expression"/>
-        <result property="fact" column="Fact"/>
-        <result property="unitId" column="Unit_id"/>
+        <result property="factId" column="Fact_id"/>
+        <result property="type" column="Type"/>
+
     </resultMap>
     <select
-            id="getExpressions"
+            id="getExpression"
             parameterType="java.lang.Integer"
             resultMap="ExpressionResult"
-            resultType="parserPackage.dbTools.Expression">
-          SELECT *
+            resultType="parserPackage.dbTools.IdKeeper">
+          SELECT "Expressions"."Exp_id", "Facts"."Fact", "ExpressionTypes"."Type"
           FROM "Expressions"
-          WHERE "Expressions"."Unit_id" = #{id}
+          INNER JOIN "ExpressionTypes" ON ("Expressions"."Type_id" = "ExpressionTypes"."Type_id")
+          INNER JOIN "Facts" ON ("Expressions"."Fact_id" = "Facts"."Fact_id")
+          WHERE "Expressions"."Exp_id" = #{id}
     </select>
-    <select id="getFacts"
+    <select
+            id="getOperandsByExpId"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        SELECT "ExpressionRelations"."Operand_id"
+        FROM "ExpressionRelations"
+        WHERE "ExpressionRelations"."Expression_id" = #{id}
+    </select>
+    <!--<select id="getType"
+            parameterType="java.lang.Integer"
             resultType="java.lang.String">
-        SELECT "FactsPool"."Facts"
-        FROM "FactsPool"
-        WHERE "FactsPool"."Unit_id" = 1
-    </select>
+        SELECT "ExpressionTypes"."Type"
+        FROM "ExpressionTypes"
+        WHERE "ExpressionTypes"."Type_id" = #{id}
+    </select>-->
 </mapper>

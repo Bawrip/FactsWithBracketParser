@@ -1,4 +1,4 @@
-package parserPackage.parser;
+package parserPackage.factTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,12 @@ import java.util.Set;
 public class OrExpression implements IExpression {
     private List<IExpression> expressions;
 
-    OrExpression(List<IExpression> expressions) {
+    public OrExpression(List<IExpression> expressions) {
         this.expressions = new ArrayList<>(expressions);
+    }
+
+    public List<IExpression> getExpressions() {
+        return expressions;
     }
 
     @Override

@@ -1,11 +1,12 @@
 package parserPackage.dbTools.mapper;
 
-import parserPackage.dbTools.Expression;
+import parserPackage.dbTools.IdKeeper;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public interface ExpressionMapper {
-    ArrayList<Expression> getExpressions(Integer id);
-    String getFacts(Integer id);
+    IdKeeper getExpression(Integer id);
+    /*String getType(Integer id);*/
+    ArrayList<Integer> getOperandsByExpId(Integer id);
 }

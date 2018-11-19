@@ -1,4 +1,4 @@
-package parserPackage.parser;
+package parserPackage.factTools;
 
 import java.util.Set;
 

@@ -1,4 +1,4 @@
-package parserPackage.exceptions;
+package parserPackage.exceptions.txt;
 
 public class FactsExpectedException extends Exception {
     private int line;

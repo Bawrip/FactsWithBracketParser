@@ -1,4 +1,4 @@
-package parserPackage.parser;
+package parserPackage.factTools;
 
 import java.util.*;
 
@@ -12,6 +12,11 @@ public class Facts {
         this.rules = rules;
         this.facts = new TreeSet<>(Arrays.asList(facts));
     }
+
+    public LinkedList<Rule> getRules() {
+        return rules;
+    }
+
 
     public Set<String> getFacts() {
         return facts;

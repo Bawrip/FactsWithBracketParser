@@ -122,7 +122,7 @@ public class MainWithSomeFilesTest {
         System.setOut(new PrintStream(buff));
 
         Main.main(args);
-        Assert.assertEquals("Line 1 is incorrect. Invalid logical expression in rule.\r\n", buff.toString());
+        Assert.assertEquals("Line 1 is incorrect. Invalid fact in rule.\r\n", buff.toString());
     }
 
     @Test

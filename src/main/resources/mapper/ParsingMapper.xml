@@ -1,0 +1,44 @@
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="parserPackage.dbTools.mapper.ParsingMapper">
+    <resultMap id="ExpressionResult" type="parserPackage.dbTools.DbExpression">
+        <id property="expId" column="Exp_id"/>
+        <result property="fact" column="Fact"/>
+        <result property="type" column="Type" javaType="parserPackage.ExpressionTypes"/>
+    </resultMap>
+    <select
+            id="getExpression"
+            parameterType="java.lang.Integer"
+            resultMap="ExpressionResult">
+        SELECT "Expressions"."Exp_id", "Expressions"."Fact", "Expressions"."Type"
+        FROM "Expressions"
+        WHERE "Expressions"."Exp_id" = #{id}
+    </select>
+    <select
+            id="getKnownFacts"
+            resultType="java.lang.String">
+        SELECT "Fact"
+        FROM "KnownFacts"
+    </select>
+    <resultMap id="RuleResult" type="parserPackage.dbTools.DbRule">
+        <id property="id" column="Rule_id"/>
+        <result property="fact" column="Fact"/>
+        <association property="dbExpression"
+                     column="Expression_id"
+                     javaType="parserPackage.dbTools.DbExpression"
+                     select="parserPackage.dbTools.mapper.ParsingMapper.getExpression"
+                     fetchType="eager"/>
+    </resultMap>
+    <select
+            id="getRules"
+            resultMap="RuleResult">
+        SELECT "Rule_id", "Expression_id", "Fact"
+        FROM "Rules"
+    </select>
+    <select id="getOperands"
+            parameterType="java.lang.Integer"
+            resultMap="ExpressionResult">
+        SELECT "Expressions"."Exp_id", "Expressions"."Fact", "Expressions"."Type"
+        FROM "Expressions" INNER JOIN "ExpressionRelations" ON ("Expressions"."Exp_id" = "ExpressionRelations"."Operand_id")
+        WHERE "ExpressionRelations"."Expression_id" = #{id}
+    </select>
+</mapper>

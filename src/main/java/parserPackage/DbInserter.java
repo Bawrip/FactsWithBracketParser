@@ -4,16 +4,18 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import parserPackage.dbTools.IdKeeper;
+
+import parserPackage.dbTools.InsertedId;
 import parserPackage.dbTools.mapper.FactsInsertMapper;
+import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.*;
 
 import java.io.FileInputStream;
+
+import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 ;
 
 public class DbInserter {
@@ -22,65 +24,80 @@ public class DbInserter {
     }
     private FactsInsertMapper factsInsertMapper;
 
-    public void insert(Facts facts, String config) throws Exception {
+    public void insert(Model model, String config) throws IOException, ParserException {
         Properties dbConfig = new Properties();
         dbConfig.load(new FileInputStream(config));
 
         Reader reader = Resources.getResourceAsReader("mybatis-config.xml");
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, dbConfig);
-
-        try (SqlSession session = sqlSessionFactory.openSession()) {
+        SqlSession session = sqlSessionFactory.openSession();
+        try {
             factsInsertMapper = session.getMapper(FactsInsertMapper.class);
 
-            insertKnownFacts(facts.getFacts());
+            factsInsertMapper.insertFacts(model.getFacts());
 
-            for (Rule rule : facts.getRules()) {
+            for (Rule rule : model.getRules()) {
                 insertRule(rule);
             }
 
             session.commit();
-            System.out.println("Commit");
+        } catch (Exception ex) {
+            session.rollback();
+            throw ex;
+        } finally {
+            session.close();
         }
     }
 
-    private void insertRule(Rule rule) {
-        Integer expId = insertExpression(rule.getRule());
+    private void insertRule(Rule rule) throws ParserException {
+        Integer expId = insertExpression(rule.getExpression());
 
         factsInsertMapper.insertRule(expId, rule.getFact());
     }
 
-    private Integer insertExpression(IExpression expression) {
-        if (expression.getClass().getSimpleName().equals("FactExpression")) {
-            IdKeeper keeperExpId = new IdKeeper();
+    private Integer insertExpression(IExpression expression) throws ParserException {
+        InsertedId expId = new InsertedId();
+
+        ExpressionTypes type = defineType(expression);
+
+        if (type == ExpressionTypes.Fact) {
+
 
             FactExpression factExpression = (FactExpression) expression;
-            factsInsertMapper.insertExpression(keeperExpId, "Fact", factExpression.getFact());
+            factsInsertMapper.insertExpression(expId, type, factExpression.getFact());
 
-            return keeperExpId.getId();
+            return expId.getId();
         }
 
         List<IExpression> expressions = null;
-        String type = null;
 
-        if (expression.getClass().getSimpleName().equals("OrExpression")) {
-            expressions = ((OrExpression) expression).getExpressions();
-            type = "Or";
+        if (type == ExpressionTypes.And) {
+            AndExpression andExpression = (AndExpression) expression;
+            expressions = andExpression.getExpressions();
         }
-        if (expression.getClass().getSimpleName().equals("AndExpression")) {
-            expressions = ((AndExpression) expression).getExpressions();
-            type = "And";
+        if (type == ExpressionTypes.Or) {
+            OrExpression andExpression = (OrExpression) expression;
+            expressions = andExpression.getExpressions();
         }
-        IdKeeper expressionId  = new IdKeeper();
-        factsInsertMapper.insertExpression(expressionId, type, null);
+        factsInsertMapper.insertExpression(expId, type, null);
 
         for (IExpression iExpression : expressions) {
             Integer operandId = insertExpression(iExpression);
-            factsInsertMapper.insertRelation(expressionId.getId(), operandId);
+            factsInsertMapper.insertRelation(expId.getId(), operandId);
         }
-        return expressionId.getId();
+        return expId.getId();
     }
 
-    private void insertKnownFacts(Set<String> facts) {
-        factsInsertMapper.insertFacts(facts);
+    private ExpressionTypes defineType(IExpression expression) throws ParserException {
+        if (expression instanceof FactExpression) {
+            return ExpressionTypes.Fact;
+        }
+        if (expression instanceof AndExpression) {
+            return ExpressionTypes.And;
+        }
+        if (expression instanceof OrExpression) {
+            return ExpressionTypes.Or;
+        }
+        throw new ParserException("Incorrect type of expression");
     }
 }

@@ -1,6 +1,6 @@
 package parserPackage.parser;
 
-import parserPackage.exceptions.txt.*;
+import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.*;
 
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 //если файл корректный -> найденные правила и факты заносятся в объект Facts
 public class TxtParser implements Parser{
     private static final String SEPARATOR = "----------------------------------------------------------------";
-    private static final Pattern FACT_PATTERN = Pattern.compile("([$_a-zA-Z]|[a-zA-Z][0-9])+");
+    private static final Pattern FACT_PATTERN = Pattern.compile("^[a-zA-Z]+[a-zA-Z0-9_]*$");
 
 
     private int line;
@@ -31,14 +31,7 @@ public class TxtParser implements Parser{
 
     //парсинг файла
     @Override
-    public Facts parse(String path)
-            throws FileNotFoundException,
-            FactsExpectedException,
-            EmptyFileException,
-            ExpectedEndOfFileException,
-            RuleExpectedException,
-            IncorrectRightPartOfRuleException,
-            IncorrectLeftPartOfRuleException {
+    public Model parse(String path) throws FileNotFoundException, ParserException {
 
         String[] facts = null;
         LinkedList<Rule> rules = new LinkedList<>();
@@ -69,35 +62,32 @@ public class TxtParser implements Parser{
                         state = FileParsingState.End;
                         break;
                     case End:
-                        throw new ExpectedEndOfFileException(line);
+                        throw new ParserException("Expected end of file in line", line);
                 }
             }
             if (state == FileParsingState.Start)
-                throw new EmptyFileException();
+                throw new ParserException("File is empty");
             if (state == FileParsingState.Rule)
-                throw new RuleExpectedException(line);
+                throw new ParserException("Expected rule", line);
             if (state == FileParsingState.Fact)
-                throw new FactsExpectedException(line);
+                throw new ParserException("Expected line of facts", line);
         }
-        return new Facts(rules, facts);
+        return new Model(rules, facts);
     }
 
     //обработка правила
-    private Rule ruleToInternalFormat(String ruleStr)
-            throws RuleExpectedException,
-            IncorrectRightPartOfRuleException,
-            IncorrectLeftPartOfRuleException {
+    private Rule ruleToInternalFormat(String ruleStr) throws ParserException {
 
         String splitRule[] = ruleStr.split("->");
         if (splitRule.length != 2) {
-            throw new RuleExpectedException(line);
+            throw new ParserException("Incorrect rule in line", line);
         }
 
         String stringExpression = splitRule[0];
         String fact = splitRule[1].trim();
 
         if (!FACT_PATTERN.matcher(fact).matches()) {
-            throw new IncorrectRightPartOfRuleException(line);
+            throw new ParserException("Incorrect fact in line", line);
         }
 
         charIndex = 0;
@@ -106,13 +96,13 @@ public class TxtParser implements Parser{
     }
 
     //добавление фактов в объект facts
-    private String[] parseFacts(String factsLine) throws FactsExpectedException {
+    private String[] parseFacts(String factsLine) throws ParserException {
         String splitFacts[] = factsLine.split(",");
 
         for (int i = 0; i < splitFacts.length; i++) {
             splitFacts[i] = splitFacts[i].trim();
             if (!FACT_PATTERN.matcher(splitFacts[i]).matches()) {
-                throw new FactsExpectedException(line);
+                throw new ParserException("Incorrect fact in line ", line);
             }
         }
         return splitFacts;
@@ -127,7 +117,7 @@ public class TxtParser implements Parser{
         AndOperation
     }
 
-    private OrExpression parseExpression(char[] buffer, boolean wasOpenBracket) throws IncorrectLeftPartOfRuleException {
+    private IExpression parseExpression(char[] buffer, boolean wasOpenBracket) throws ParserException {
 
         ExpressionParsingState state = ExpressionParsingState.SkipSpaceBeforeFact;
         ArrayList<IExpression> operands = new ArrayList<>();
@@ -135,6 +125,8 @@ public class TxtParser implements Parser{
         int operationCounter = 0;
         int firstCharOfFact = -1;
         boolean wasCloseBracket = false;
+        boolean wasAndOperation = false;
+        boolean wasOrOperation = false;
         char operation = '\0';
 
         afterCloseBracket:
@@ -161,7 +153,7 @@ public class TxtParser implements Parser{
 
                     String fact = new String(buffer, firstCharOfFact, charIndex - firstCharOfFact);
                     if (!FACT_PATTERN.matcher(fact).matches()) {
-                        throw new IncorrectLeftPartOfRuleException(line);
+                        throw new ParserException("Incorrect symbol in line", line);
                     }
                     operands.add(new FactExpression(fact));
 
@@ -178,9 +170,11 @@ public class TxtParser implements Parser{
                         state = ExpressionParsingState.OrOperation;
                         break;
                     }
-                    state = ExpressionParsingState.SkipSpacesBeforeOperation;
-                    charIndex--;
-                    break;
+                    if (symbol == ' ' || symbol == '\t' || symbol == '\r' || symbol == '\f') {
+                        state = ExpressionParsingState.SkipSpacesBeforeOperation;
+                        break;
+                    }
+                    throw new ParserException("Incorrect symbol in line", line);
                 case ExpressionInBrackets:
 
                     operands.add(parseExpression(buffer, true));
@@ -205,10 +199,12 @@ public class TxtParser implements Parser{
                         break;
                     }
 
-                    throw new IncorrectLeftPartOfRuleException(line);
+                    throw new ParserException("Incorrect symbol in line", line);
                 case AndOperation:
+                    wasAndOperation = true;
+
                     if (symbol != operation) {
-                        throw new IncorrectLeftPartOfRuleException(line);
+                        throw new ParserException("Incorrect symbol in line", line);
                     }
 
                     operators.add(operationCounter);
@@ -216,8 +212,9 @@ public class TxtParser implements Parser{
                     state = ExpressionParsingState.SkipSpaceBeforeFact;
                     break;
                 case OrOperation:
+                    wasOrOperation = true;
                     if (symbol != operation) {
-                        throw new IncorrectLeftPartOfRuleException(line);
+                        throw new ParserException("Incorrect symbol in line", line);
                     }
                     operationCounter++;
                     state = ExpressionParsingState.SkipSpaceBeforeFact;
@@ -230,28 +227,31 @@ public class TxtParser implements Parser{
 
                 String fact = new String(buffer, firstCharOfFact, charIndex - firstCharOfFact);
                 if (!FACT_PATTERN.matcher(fact).matches()) {
-                    throw new IncorrectLeftPartOfRuleException(line);
+                    throw new ParserException("Incorrect symbol in line", line);
                 }
                 operands.add(new FactExpression(fact));
             } else if (state != ExpressionParsingState.SkipSpacesBeforeOperation) {
-                throw new IncorrectLeftPartOfRuleException(line);
+                throw new ParserException("Incorrect expression in line", line);
             }
         }
         if (wasOpenBracket != wasCloseBracket) {
-            throw new IncorrectLeftPartOfRuleException(line);
+            throw new ParserException("Incorrect expression in line", line);
         }
 
-        OrExpression orExpression;
+        IExpression iExpression;
         try {
-            orExpression = createOrExpression(operands, operators);
+            iExpression = createExpression(operands, operators, wasAndOperation, wasOrOperation);
         } catch (IndexOutOfBoundsException ex) {
-            throw new IncorrectLeftPartOfRuleException(line);
+            throw new ParserException("Incorrect expression in line", line);
         }
 
-        return orExpression;
+        return iExpression;
     }
 
-    private OrExpression createOrExpression(ArrayList<IExpression> operands, ArrayList<Integer> operators) {
+    private IExpression createExpression(ArrayList<IExpression> operands, ArrayList<Integer> operators, boolean wasAnd, boolean wasOr) {
+        if (!wasAnd && !wasOr) {
+            return operands.get(0);
+        }
         while (!operators.isEmpty()) {
             int i = 0;
             ArrayList<IExpression> membersOfAnd = new ArrayList<>();
@@ -279,7 +279,9 @@ public class TxtParser implements Parser{
 
             operands.set(firstOperand, new AndExpression(membersOfAnd));
         }
-
+        if (!wasOr) {
+            return operands.get(0);
+        }
         return new OrExpression(operands);
     }
 }

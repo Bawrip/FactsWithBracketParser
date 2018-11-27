@@ -2,30 +2,26 @@ package parserPackage.dbTools;
 
 public class DbRule {
     private int id;
-    private int expressionId;
-    private int factId;
+    private DbExpression dbExpression;
+    private String fact;
+
+    public String getFact() {
+        return fact;
+    }
+
+    public void setFact(String fact) {
+        this.fact = fact;
+    }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public DbExpression getDbExpression() {
+        return dbExpression;
     }
 
-    public int getExpressionId() {
-        return expressionId;
-    }
-
-    public void setExpressionId(int expressionId) {
-        this.expressionId = expressionId;
-    }
-
-    public int getFactId() {
-        return factId;
-    }
-
-    public void setFactId(int factId) {
-        this.factId = factId;
+    public void setDbExpression(DbExpression dbExpression) {
+        this.dbExpression = dbExpression;
     }
 }

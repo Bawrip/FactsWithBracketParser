@@ -3,9 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
     <settings>
         <setting name="callSettersOnNulls" value="true"/>
     </settings>
+    <typeAliases>
+        <typeAlias type="org.apache.ibatis.type.EnumTypeHandler" alias="EnumHandler"/>
+    </typeAliases>
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -23,11 +27,9 @@
     </environments>
 
     <mappers><!--в данном блоке необходимо описать маперы, которые используются в проекте-->
-        <mapper resource="Mapper\ExpressionMapper.xml"/>
-        <mapper resource="Mapper\FactMapper.xml"/>
-        <mapper resource="Mapper\KnownFactsMapper.xml"/>
-        <mapper resource="Mapper\RulesMapper.xml"/>
+        <mapper resource="Mapper\ParsingMapper.xml"/>
         <mapper resource="Mapper\FactsInsertMapper.xml"/>
+        <mapper resource="Mapper\DatabaseTruncateMapper.xml"/>
     </mappers>
 
 </configuration>

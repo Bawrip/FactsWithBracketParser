@@ -2,15 +2,12 @@
 <mapper namespace="parserPackage.dbTools.mapper.FactsInsertMapper">
     <insert
             id="insertExpression"
-            parameterType="parserPackage.dbTools.IdKeeper"
+            parameterType="parserPackage.dbTools.InsertedId"
             useGeneratedKeys="true"
             keyColumn="Exp_id"
             keyProperty="keeper.id">
 
-        INSERT INTO "Expressions" ("Type_id", "Fact") VALUES ((SELECT "Type_id" FROM "ExpressionTypes" WHERE "Type" = #{type}), #{fact})
-    </insert>
-    <insert id="insertFact">
-        INSERT INTO "KnownFacts" ("Fact") VALUES (#{fact})
+        INSERT INTO "Expressions" ("Type", "Fact") VALUES (#{type}::"ExpressionTypes", #{fact})
     </insert>
     <insert id="insertRule">
         INSERT INTO "Rules" ("Expression_id", "Fact") VALUES (#{expId}, #{fact})

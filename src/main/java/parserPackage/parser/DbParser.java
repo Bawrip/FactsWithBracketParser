@@ -1,4 +1,3 @@
-/*
 package parserPackage.parser;
 
 import org.apache.ibatis.io.Resources;
@@ -6,16 +5,12 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
+import parserPackage.ExpressionTypes;
 import parserPackage.dbTools.DbRule;
-import parserPackage.dbTools.IdKeeper;
-import parserPackage.dbTools.mapper.ExpressionMapper;
-import parserPackage.dbTools.mapper.FactMapper;
-import parserPackage.dbTools.mapper.KnownFactsMapper;
-import parserPackage.dbTools.mapper.RulesMapper;
+import parserPackage.dbTools.DbExpression;
 
-import parserPackage.exceptions.db.IncorrectFactException;
-import parserPackage.exceptions.db.IncorrectLeftPartOfRuleException;
-import parserPackage.exceptions.db.IncorrectRightPartOfRuleException;
+import parserPackage.dbTools.mapper.ParsingMapper;
+import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.*;
 
 import java.io.FileInputStream;
@@ -30,8 +25,7 @@ import java.util.regex.Pattern;
 public class DbParser implements Parser {
     private static final Pattern FACT_PATTERN = Pattern.compile("([$_a-zA-Z]|[a-zA-Z][0-9])+");
 
-    private FactMapper factMapper;
-    private ExpressionMapper expressionMapper;
+    private ParsingMapper parsingMapper;
 
     private int ruleId;
 
@@ -40,13 +34,8 @@ public class DbParser implements Parser {
 
     //парсинг файла
     @Override
-    public Facts parse(String configPath)
-            throws IOException,
-            IncorrectLeftPartOfRuleException,
-            IncorrectRightPartOfRuleException,
-            IncorrectFactException {
+    public Model parse(String configPath) throws IOException, ParserException {
 
-        //String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         Properties dbConfig = new Properties();
         dbConfig.load(new FileInputStream(configPath));
 
@@ -56,84 +45,68 @@ public class DbParser implements Parser {
         LinkedList<Rule> rules;
         String[] resultFacts;
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            factMapper = session.getMapper(FactMapper.class);
-            expressionMapper = session.getMapper(ExpressionMapper.class);
+            parsingMapper = session.getMapper(ParsingMapper.class);
 
             rules = new LinkedList<>();
-            RulesMapper rulesMapper = session.getMapper(RulesMapper.class);
-            ArrayList<DbRule> dbRules = rulesMapper.getRules();
 
-            for (DbRule rule : dbRules) {
-                ruleId = rule.getId();
-                rules.add(ruleToInternalFormat(rule.getExpressionId(), rule.getFactId()));
+            ArrayList<DbRule> dbRules = parsingMapper.getRules();
+
+            for (DbRule dbRule : dbRules) {
+                ruleId = dbRule.getId();
+                rules.add(ruleToInternalFormat(dbRule.getDbExpression(), dbRule.getFact()));
             }
 
-            KnownFactsMapper knownFactsMapper = session.getMapper(KnownFactsMapper.class);
-            ArrayList<String> facts = knownFactsMapper.getKnownFacts();
-            resultFacts = parseFacts(facts);
+            resultFacts = parseFacts(parsingMapper.getKnownFacts());
         }
 
-        return new Facts(rules, resultFacts);
+        return new Model(rules, resultFacts);
     }
 
     //обработка правила
-    private Rule ruleToInternalFormat(int expId, int factId)
-            throws IncorrectLeftPartOfRuleException,
-            IncorrectRightPartOfRuleException {
+    private Rule ruleToInternalFormat(DbExpression dbExpression, String fact) throws ParserException {
 
-        String fact = factMapper.getFactById(factId);
         if (!FACT_PATTERN.matcher(fact).matches()) {
-            throw new IncorrectRightPartOfRuleException(ruleId);
+            throw new ParserException("Incorrect fact in rule ");
         }
 
-        IdKeeper expression = expressionMapper.getExpression(expId);
+        IExpression iExpression = parseExpression(dbExpression);
 
-        return new Rule(parseExpression(expression), fact);
+        return new Rule(iExpression, fact);
     }
 
     //добавление фактов в объект facts
-    private String[] parseFacts(ArrayList<String> facts) throws IncorrectFactException {
-        String fact;
-        String[] result = new String[facts.size()];
-        int i = 0;
-        for (String f : facts) {
-            fact = f;
-            fact = fact.trim();
-            if (!FACT_PATTERN.matcher(fact).matches()) {
-                throw new IncorrectFactException();
+    private String[] parseFacts(String[] facts) throws ParserException {
+        for (int i = 0; i < facts.length; i++) {
+            facts[i] = facts[i].trim();
+            if (!FACT_PATTERN.matcher(facts[i]).matches()) {
+                throw new ParserException("Incorrect fact in table KnownRules");
             }
-            result[i] = fact;
-            i++;
         }
-        return result;
+        return facts;
     }
 
-
-    private IExpression parseExpression(IdKeeper expression) throws IncorrectLeftPartOfRuleException {
+    private IExpression parseExpression(DbExpression dbExpression) throws ParserException {
         List<IExpression> expressions = new ArrayList<>();
 
-        String typeOfExpression = expression.getType();
-
-        if (typeOfExpression.equals("Fact")) {
-            return new FactExpression(factMapper.getFactById(expression.getFactId()));
+        if (dbExpression.getType() == ExpressionTypes.Fact) {
+            return new FactExpression(dbExpression.getFact());
         }
 
-        ArrayList<Integer> operandsId = expressionMapper.getOperandsByExpId(expression.getId());
-
-        for (Integer i : operandsId) {
-            expressions.add(parseExpression(expressionMapper.getExpression(i)));
+        ArrayList<DbExpression> operands = parsingMapper.getOperands(dbExpression.getExpId());
+        for (DbExpression operand : operands) {
+            expressions.add(parseExpression(operand));
         }
 
-        if (typeOfExpression.equals("Or")) {
+        if (dbExpression.getType() == ExpressionTypes.Or) {
             return new OrExpression(expressions);
         }
-        if (typeOfExpression.equals("And")) {
+
+        if (dbExpression.getType() == ExpressionTypes.And) {
             return new AndExpression(expressions);
         }
 
-        throw new IncorrectLeftPartOfRuleException(ruleId);
+        throw new ParserException("Unresolved type of expression in rule ", ruleId);
     }
 
 
 }
-*/

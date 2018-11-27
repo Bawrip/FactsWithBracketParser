@@ -4,16 +4,16 @@ import java.util.Set;
 
 //класс, в котором хранится правило и факт, который из этого правила следует
 public class Rule {
-    private IExpression rule;
+    private IExpression expression;
     private String fact;
 
     public Rule(IExpression expression, String fact) {
-        rule = expression;
+        this.expression = expression;
         this.fact = fact;
     }
 
-    public IExpression getRule() {
-        return rule;
+    public IExpression getExpression() {
+        return expression;
     }
 
     public String getFact() {
@@ -21,6 +21,6 @@ public class Rule {
     }
 
     public boolean evaluateRule(Set<String> facts) {
-        return rule.evaluate(facts);
+        return expression.evaluate(facts);
     }
 }

@@ -8,7 +8,12 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import parserPackage.Main;
+import parserPackage.dbTools.DbExpression;
 import parserPackage.dbTools.mapper.DatabaseTruncateMapper;
+import parserPackage.factTools.Model;
+import parserPackage.parser.DbParser;
+import parserPackage.parser.Engine;
+import parserPackage.parser.TxtParser;
 
 
 import java.io.*;
@@ -28,29 +33,77 @@ public class DatabaseInsertTest {
             " -t,--text <textPath>                  Argument is a path of text file, which contains rules and facts. Extracts the\r\n" +
             "                                       facts from the rules and deduce them.\r\n";
 
-    @Ignore
     @Test
-    public void testInsertDb1() {
-        String args[] = {"-i",testTxtDir + "positive1.txt", testPropDir + "dbInsertTest.properties"};
+    public void testOneStore() {
+        ByteArrayOutputStream buff = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(buff));
+
+        String txtPath = testTxtDir + "positive1.txt";
+        String dbPath = testPropDir + "dbInsertTest.properties";
+
+        String iArgs[] = {"-i", txtPath, dbPath};
+        Main.main(iArgs);
+
+        Assert.assertEquals("Facts and Rules inserted into database successfully.\r\n", buff.toString());
+        TxtParser txtParser = new TxtParser();
+        DbParser dbParser = new DbParser();
+
+        Model txtModel;
+        Model dbModel;
+
+        try {
+            txtModel = txtParser.parse(txtPath);
+            txtModel.processRules();
+
+            dbModel = dbParser.parse(dbPath);
+            dbModel.processRules();
+
+
+            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        try {
+            truncateDatabase(testPropDir + "dbInsertTest.properties");
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testMultiStore() {
+        String dbPath = testPropDir + "dbInsertTest.properties";
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
 
+        Main.main(new String[] {"-i", testTxtDir + "positive1.txt", dbPath});
+        Main.main(new String[] {"-i", testTxtDir + "positive2.txt", dbPath});
+        Main.main(new String[] {"-i", testTxtDir + "positive3.txt", dbPath});
+
+        TxtParser txtParser = new TxtParser();
+        DbParser dbParser = new DbParser();
+
+        Model txtModel;
+        Model dbModel;
+
+        try {
+            txtModel = txtParser.parse(testTxtDir + "positive3.txt");
+            txtModel.processRules();
+
+            dbModel = dbParser.parse(dbPath);
+            dbModel.processRules();
+
+
+            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
         try {
             truncateDatabase(testPropDir + "dbInsertTest.properties");
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-
-        Main.main(args);
-
-        try {
-            truncateDatabase(testPropDir + "dbInsertTest.properties");
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
-        }
-
-        Assert.assertEquals("Facts and Rules inserted into database successfully.\r\n", buff.toString());
     }
 
     @Test
@@ -66,7 +119,7 @@ public class DatabaseInsertTest {
     }
 
     @Test
-    public void testInsertDb4() {
+    public void testInsertDb3() {
         String args[] = {"-i"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();

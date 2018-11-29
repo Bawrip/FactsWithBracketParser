@@ -4,15 +4,15 @@ import java.util.Set;
 
 //класс, в котором хранится правило и факт, который из этого правила следует
 public class Rule {
-    private IExpression expression;
+    private JExpression expression;
     private String fact;
 
-    public Rule(IExpression expression, String fact) {
+    public Rule(JExpression expression, String fact) {
         this.expression = expression;
         this.fact = fact;
     }
 
-    public IExpression getExpression() {
+    public JExpression getExpression() {
         return expression;
     }
 

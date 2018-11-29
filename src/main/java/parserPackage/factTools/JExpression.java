@@ -2,6 +2,6 @@ package parserPackage.factTools;
 
 import java.util.Set;
 
-public interface IExpression {
+public interface JExpression {
     boolean evaluate(Set<String> facts);
 }

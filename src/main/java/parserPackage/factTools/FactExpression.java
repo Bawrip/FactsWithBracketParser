@@ -2,7 +2,7 @@ package parserPackage.factTools;
 
 import java.util.Set;
 
-public class FactExpression implements IExpression {
+public class FactExpression implements JExpression {
     private String fact;
 
     public FactExpression(String fact) {

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class AndExpression implements IExpression {
-    private List<IExpression> expressions;
+public class AndExpression implements JExpression {
+    private List<JExpression> expressions;
 
-    public AndExpression(List<IExpression> expressions) {
+    public AndExpression(List<JExpression> expressions) {
         this.expressions = new ArrayList<>(expressions);
     }
 
-    public List<IExpression> getExpressions() {
+    public List<JExpression> getExpressions() {
         return expressions;
     }
 
     @Override
     public boolean evaluate(Set<String> facts) {
-        for (IExpression expression : expressions) {
+        for (JExpression expression : expressions) {
             if (!expression.evaluate(facts)) {
                 return false;
             }

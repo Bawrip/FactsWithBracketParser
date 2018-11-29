@@ -2,7 +2,6 @@ package parserPackage.parser;
 
 import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -91,8 +90,8 @@ public class TxtParser implements Parser{
         }
 
         charIndex = 0;
-        IExpression expression = parseExpression(stringExpression.toCharArray(), false);
-        return new Rule(expression, fact);
+        JExpression jExpression = parseExpression(stringExpression.toCharArray(), false);
+        return new Rule(jExpression, fact);
     }
 
     //добавление фактов в объект facts
@@ -117,16 +116,14 @@ public class TxtParser implements Parser{
         AndOperation
     }
 
-    private IExpression parseExpression(char[] buffer, boolean wasOpenBracket) throws ParserException {
+    private JExpression parseExpression(char[] buffer, boolean wasOpenBracket) throws ParserException {
 
         ExpressionParsingState state = ExpressionParsingState.SkipSpaceBeforeFact;
-        ArrayList<IExpression> operands = new ArrayList<>();
+        ArrayList<JExpression> operands = new ArrayList<>();
         ArrayList<Integer> operators = new ArrayList<>();
         int operationCounter = 0;
         int firstCharOfFact = -1;
         boolean wasCloseBracket = false;
-        boolean wasAndOperation = false;
-        boolean wasOrOperation = false;
         char operation = '\0';
 
         afterCloseBracket:
@@ -201,8 +198,6 @@ public class TxtParser implements Parser{
 
                     throw new ParserException("Incorrect symbol in line", line);
                 case AndOperation:
-                    wasAndOperation = true;
-
                     if (symbol != operation) {
                         throw new ParserException("Incorrect symbol in line", line);
                     }
@@ -212,7 +207,6 @@ public class TxtParser implements Parser{
                     state = ExpressionParsingState.SkipSpaceBeforeFact;
                     break;
                 case OrOperation:
-                    wasOrOperation = true;
                     if (symbol != operation) {
                         throw new ParserException("Incorrect symbol in line", line);
                     }
@@ -238,23 +232,23 @@ public class TxtParser implements Parser{
             throw new ParserException("Incorrect expression in line", line);
         }
 
-        IExpression iExpression;
+        JExpression jExpression;
         try {
-            iExpression = createExpression(operands, operators, wasAndOperation, wasOrOperation);
+            jExpression = createExpression(operands, operators);
         } catch (IndexOutOfBoundsException ex) {
             throw new ParserException("Incorrect expression in line", line);
         }
 
-        return iExpression;
+        return jExpression;
     }
 
-    private IExpression createExpression(ArrayList<IExpression> operands, ArrayList<Integer> operators, boolean wasAnd, boolean wasOr) {
-        if (!wasAnd && !wasOr) {
+    private JExpression createExpression(ArrayList<JExpression> operands, ArrayList<Integer> operators) {
+        if (operands.size() == 1) {
             return operands.get(0);
         }
         while (!operators.isEmpty()) {
             int i = 0;
-            ArrayList<IExpression> membersOfAnd = new ArrayList<>();
+            ArrayList<JExpression> membersOfAnd = new ArrayList<>();
 
             int operator = operators.get(i);
             int firstOperand = operators.get(i);
@@ -279,7 +273,7 @@ public class TxtParser implements Parser{
 
             operands.set(firstOperand, new AndExpression(membersOfAnd));
         }
-        if (!wasOr) {
+        if (operands.size() == 1) {
             return operands.get(0);
         }
         return new OrExpression(operands);

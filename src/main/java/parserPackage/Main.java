@@ -1,6 +1,7 @@
 package parserPackage;
 
 import org.apache.commons.cli.*;
+import parserPackage.exceptions.EngineException;
 import parserPackage.parser.Engine;
 
 
@@ -26,11 +27,13 @@ public class Main {
                 engine = new Engine(userInteraction, Engine.Mode.databaseProcessing, commandLine.getOptionValue("d"));
             } else if (commandLine.hasOption("i")) {
                 String[] values = commandLine.getOptionValues("i");
-                engine = new Engine(userInteraction, Engine.Mode.databaseInsert, values[0], values[1]);
+                engine = new Engine(userInteraction, Engine.Mode.databaseStore, values[0], values[1]);
             }
         } catch (ParseException ex) {
             formatter.printHelp("App", options, true);
             return;
+        } catch (EngineException ex) {
+            System.err.println(ex.getMessage());
         }
 
 

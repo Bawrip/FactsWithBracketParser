@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class OrExpression implements IExpression {
-    private List<IExpression> expressions;
+public class OrExpression implements JExpression {
+    private List<JExpression> expressions;
 
-    public OrExpression(List<IExpression> expressions) {
+    public OrExpression(List<JExpression> expressions) {
         this.expressions = new ArrayList<>(expressions);
     }
 
-    public List<IExpression> getExpressions() {
+    public List<JExpression> getExpressions() {
         return expressions;
     }
 
     @Override
     public boolean evaluate(Set<String> facts) {
-        for (IExpression expression : expressions) {
+        for (JExpression expression : expressions) {
             if (expression.evaluate(facts))
                 return true;
         }

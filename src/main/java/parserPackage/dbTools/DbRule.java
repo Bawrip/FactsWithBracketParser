@@ -21,7 +21,4 @@ public class DbRule {
         return dbExpression;
     }
 
-    public void setDbExpression(DbExpression dbExpression) {
-        this.dbExpression = dbExpression;
-    }
 }

@@ -6,15 +6,7 @@ import parserPackage.Main;
 import java.io.*;
 
 public class TextFileTest {
-    private String testResDir = "target\\test-classes\\Txt\\";
-    private String usageMessage = "usage: App [-d <propertyPath> | -i <textPath propertyPath> | -t <textPath>]\r\n" +
-            " -d,--database <propertyPath>          Argument is a path of property file, which contains url, login, password for\r\n" +
-            "                                       connecting to the database.Reads the database. Extracts the facts from the rules\r\n" +
-            "                                       and deduce them.\r\n" +
-            " -i,--insert <textPath propertyPath>   First argument is a path of text file, second is a path of property file. Reads\r\n" +
-            "                                       text into a database. Reads the database\r\n" +
-            " -t,--text <textPath>                  Argument is a path of text file, which contains rules and facts. Extracts the\r\n" +
-            "                                       facts from the rules and deduce them.\r\n";
+    private String testTxtDir = "target\\test-classes\\txt\\";
 
     @Test
     public void noFilenameTest() {
@@ -24,12 +16,12 @@ public class TextFileTest {
         System.setOut(new PrintStream(buff));
 
         Main.main(args);
-        Assert.assertEquals(usageMessage, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
     public void positive1() {
-        String args[] = {"-t", testResDir + "positive1.txt"};
+        String args[] = {"-t", testTxtDir + "positive1.txt"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
@@ -41,7 +33,7 @@ public class TextFileTest {
 
     @Test
     public void positive2() {
-        String args[] = {"-t", testResDir + "positive2.txt"};
+        String args[] = {"-t", testTxtDir + "positive2.txt"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
@@ -52,7 +44,7 @@ public class TextFileTest {
 
     @Test
     public void positive3() {
-        String args[] = {"-t", testResDir + "positive3.txt"};
+        String args[] = {"-t", testTxtDir + "positive3.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
 
@@ -62,7 +54,7 @@ public class TextFileTest {
 
     @Test
     public void positive4() {
-        String args[] = {"-t", testResDir + "positive4.txt"};
+        String args[] = {"-t", testTxtDir + "positive4.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
 
@@ -72,7 +64,7 @@ public class TextFileTest {
 
     @Test
     public void negative1() {
-        String args[] = {"-t", testResDir + "negative1.txt"};
+        String args[] = {"-t", testTxtDir + "negative1.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -82,7 +74,7 @@ public class TextFileTest {
 
     @Test
     public void negative2() {
-        String args[] = {"-t", testResDir + "negative2.txt"};
+        String args[] = {"-t", testTxtDir + "negative2.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -92,7 +84,7 @@ public class TextFileTest {
 
     @Test
     public void negative3() {
-        String args[] = {"-t", testResDir + "negative3.txt"};
+        String args[] = {"-t", testTxtDir + "negative3.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -102,7 +94,7 @@ public class TextFileTest {
 
     @Test
     public void negative4() {
-        String args[] = {"-t", testResDir + "negative4.txt"};
+        String args[] = {"-t", testTxtDir + "negative4.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -112,7 +104,7 @@ public class TextFileTest {
 
     @Test
     public void negative5() {
-        String args[] = {"-t", testResDir + "negative5.txt"};
+        String args[] = {"-t", testTxtDir + "negative5.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -122,7 +114,7 @@ public class TextFileTest {
 
     @Test
     public void negative6() {
-        String args[] = {"-t", testResDir + "negative6.txt"};
+        String args[] = {"-t", testTxtDir + "negative6.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -132,7 +124,7 @@ public class TextFileTest {
 
     @Test
     public void negative7() {
-        String args[] = {"-t", testResDir + "negative7.txt"};
+        String args[] = {"-t", testTxtDir + "negative7.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -142,7 +134,7 @@ public class TextFileTest {
 
     @Test
     public void negative8() {
-        String args[] = {"-t", testResDir + "negative8.txt"};
+        String args[] = {"-t", testTxtDir + "negative8.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -152,7 +144,7 @@ public class TextFileTest {
 
     @Test
     public void negative9() {
-        String args[] = {"-t", testResDir + "negative9.txt"};
+        String args[] = {"-t", testTxtDir + "negative9.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -162,7 +154,7 @@ public class TextFileTest {
 
     @Test
     public void negative10() {
-        String args[] = {"-t", testResDir + "negative10.txt"};
+        String args[] = {"-t", testTxtDir + "negative10.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -172,7 +164,7 @@ public class TextFileTest {
 
     @Test
     public void negative11() {
-        String args[] = {"-t", testResDir + "negative11.txt"};
+        String args[] = {"-t", testTxtDir + "negative11.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 
@@ -182,7 +174,7 @@ public class TextFileTest {
 
     @Test
     public void negative12() {
-        String args[] = {"-t", testResDir + "negative12.txt"};
+        String args[] = {"-t", testTxtDir + "negative12.txt"};
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setErr(new PrintStream(buff));
 

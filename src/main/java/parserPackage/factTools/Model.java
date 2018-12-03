@@ -1,12 +1,25 @@
 package parserPackage.factTools;
 
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
 
 //класс объединяющий правила и факты
+@XmlRootElement
 public class Model {
 
+    @XmlAnyElement(lax = true)
+    @XmlElementWrapper(name = "rules")
     private LinkedList<Rule> rules;//коллекция правил
+    @XmlElement(name = "fact")
+    @XmlElementWrapper(name = "facts")
     private Set<String> facts;//коллекция фактов
+
+    public Model() {
+
+    }
 
     public Model(LinkedList<Rule> rules, String[] facts) {
         this.rules = rules;

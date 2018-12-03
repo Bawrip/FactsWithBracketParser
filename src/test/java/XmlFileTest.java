@@ -1,16 +1,17 @@
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import parserPackage.Main;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class DatabaseTest {
-    private String testPropDir = "target\\test-classes\\properties\\";
+public class XmlFileTest {
+    private String testXmlDir = "target\\test-classes\\xml\\";
 
     @Test
     public void testZero() {
-        String args[] = {"-d"};
+        String args[] = {"-x"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
@@ -20,19 +21,21 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testDb1() {
-        String args[] = {"-d", testPropDir + "dbTest1.properties"};
+    public void testXml1() {
+        String args[] = {"-x", testXmlDir + "testXml1.xml"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
 
         Main.main(args);
-        Assert.assertEquals("A, B, C, D, F, M, T, Y\r\n", buff.toString());
+        //byte[] expected = {'A', ',', ' ', 'B', ',', ' ', 'C', ',', ' ', 'D', ',', ' ', 'F', ',', ' ', 'M', ',', ' ', 'T', ',', ' ', 'Y', '\r', '\n'};
+        String expected = "A, B, C, D, F, M, T, Y\r\n";
+        Assert.assertEquals(expected, buff.toString());
     }
 
     @Test
-    public void testDb2() {
-        String args[] = {"-d", testPropDir + "dbTest2.properties"};
+    public void testXml2() {
+        String args[] = {"-x", testXmlDir + "testXml2.xml"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
@@ -42,8 +45,8 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testDb3() {
-        String args[] = {"-d", testPropDir + "dbTest3.properties"};
+    public void testXml3() {
+        String args[] = {"-x", testXmlDir + "testXml3.xml"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
@@ -53,8 +56,8 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testDb4() {
-        String args[] = {"-d", testPropDir + "dbTest4.properties"};
+    public void testXml4() {
+        String args[] = {"-x", testXmlDir + "testXml4.xml"};
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));

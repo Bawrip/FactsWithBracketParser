@@ -73,9 +73,7 @@ public class DbParser implements Parser {
 
         if (dbExpression.getType() == ExpressionTypes.Or) {
             return new OrExpression(jExpressions);
-        }
-
-        if (dbExpression.getType() == ExpressionTypes.And) {
+        } else if (dbExpression.getType() == ExpressionTypes.And) {
             return new AndExpression(jExpressions);
         }
 

@@ -1,4 +1,4 @@
-package parserPackage.parser;
+package parserPackage;
 
 import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.Model;
@@ -6,6 +6,6 @@ import parserPackage.factTools.Model;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
-public interface Parser {
-    Model parse(String path) throws IOException, ParserException, JAXBException;
+public interface Filler {
+    public void store(Model model, String path) throws JAXBException, IOException, ParserException;
 }

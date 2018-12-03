@@ -19,12 +19,13 @@ import java.util.List;
 import java.util.Properties;
 ;
 
-public class DbFiller {
+public class DbFiller implements Filler {
     public DbFiller() {
 
     }
     private FactsInsertMapper factsInsertMapper;
 
+    @Override
     public void store(Model model, String config) throws IOException, ParserException {
         Properties dbConfig = new Properties();
         dbConfig.load(new FileInputStream(config));
@@ -89,11 +90,9 @@ public class DbFiller {
     private ExpressionTypes defineType(JExpression expression) throws ParserException {
         if (expression instanceof FactExpression) {
             return ExpressionTypes.Fact;
-        }
-        if (expression instanceof AndExpression) {
+        } else if (expression instanceof AndExpression) {
             return ExpressionTypes.And;
-        }
-        if (expression instanceof OrExpression) {
+        } else if (expression instanceof OrExpression) {
             return ExpressionTypes.Or;
         }
         throw new ParserException("Incorrect type of expression");

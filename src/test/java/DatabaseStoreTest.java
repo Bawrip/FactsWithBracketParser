@@ -1,41 +1,50 @@
 
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import parserPackage.Main;
-import parserPackage.dbTools.DbExpression;
 import parserPackage.dbTools.mapper.DatabaseTruncateMapper;
 import parserPackage.factTools.Model;
 import parserPackage.parser.DbParser;
-import parserPackage.parser.Engine;
 import parserPackage.parser.TxtParser;
 
 
 import java.io.*;
-import java.sql.Connection;
 import java.util.*;
 
 public class DatabaseStoreTest {
     private String testTxtDir = "target\\test-classes\\txt\\";
     private String testPropDir = "target\\test-classes\\properties\\";
 
+    private static ByteArrayOutputStream buff;
+
+    @BeforeAll
+    public static void setOut() {
+        buff = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(buff));
+    }
+
+    @BeforeEach
+    public void resetBuff() {
+        buff.reset();
+    }
+
+    @AfterAll
+    public static void removeOut(){
+        System.setOut(System.out);
+    }
+
     @Test
     public void testOneStore() {
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
-
         String txtPath = testTxtDir + "positive1.txt";
         String dbPath = testPropDir + "dbInsertTest.properties";
 
         String iArgs[] = {"-td", txtPath, dbPath};
         Main.main(iArgs);
 
-        Assert.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
+        Assertions.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
         TxtParser txtParser = new TxtParser();
         DbParser dbParser = new DbParser();
 
@@ -50,7 +59,7 @@ public class DatabaseStoreTest {
             dbModel.processRules();
 
 
-            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+            Assertions.assertEquals(txtModel.getFacts(), dbModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -64,9 +73,6 @@ public class DatabaseStoreTest {
     @Test
     public void testMultiStore() {
         String dbPath = testPropDir + "dbInsertTest.properties";
-
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
 
         Main.main(new String[] {"-td", testTxtDir + "positive1.txt", dbPath});
         Main.main(new String[] {"-td", testTxtDir + "positive2.txt", dbPath});
@@ -86,7 +92,7 @@ public class DatabaseStoreTest {
             dbModel.processRules();
 
 
-            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+            Assertions.assertEquals(txtModel.getFacts(), dbModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -101,24 +107,18 @@ public class DatabaseStoreTest {
     public void testInsertDb2() {
         String args[] = {"-td", "sometext"};
 
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
-
         Main.main(args);
 
-        Assert.assertEquals(UsageMessage.message, buff.toString());
+        Assertions.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
     public void testInsertDb3() {
         String args[] = {"-td"};
 
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
-
         Main.main(args);
 
-        Assert.assertEquals(UsageMessage.message, buff.toString());
+        Assertions.assertEquals(UsageMessage.message, buff.toString());
     }
 
     private void truncateDatabase(String config) throws IOException {

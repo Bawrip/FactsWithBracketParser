@@ -7,6 +7,7 @@ import parserPackage.XmlFiller;
 import parserPackage.exceptions.EngineException;
 import parserPackage.factTools.Model;
 
+import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 
 public class Engine {
@@ -63,13 +64,13 @@ public class Engine {
     public void execute() {
         switch (mode) {
             case textProcessing:
-                deduce(new TxtParser(), txtPath);
+                parseAndDeduce(new TxtParser(), txtPath);
                 break;
             case databaseProcessing:
-                deduce(new DbParser(), databasePath);
+                parseAndDeduce(new DbParser(), databasePath);
                 break;
             case xmlProcessing:
-                deduce(new XmlParser(), xmlPath);
+                parseAndDeduce(new XmlParser(), xmlPath);
                 break;
             case databaseStore:
                 store(new DbFiller(), databasePath);
@@ -80,10 +81,13 @@ public class Engine {
         }
     }
 
-    private void deduce(Parser parser, String path) {
+    private void parseAndDeduce(Parser parser, String path) {
         Model model;
         try {
             model = parser.parse(path);
+        } catch (JAXBException ex) {
+            userInteraction.reportError(ex.getCause().getMessage());
+            return;
         } catch (Exception ex) {
             userInteraction.reportError(ex.getMessage());
             return;

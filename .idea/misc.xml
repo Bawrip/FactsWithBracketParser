@@ -7,6 +7,9 @@
       </list>
     </option>
   </component>
+  <component name="ProjectResources">
+    <resource url="file:///C:/Users/Aleksandr.Mazanov/IdeaProjects/FactsWithBracketParser/src/test/resources/xml/mySchema.xsd" location="$PROJECT_DIR$/src/test/resources/xml/mySchema.xsd" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

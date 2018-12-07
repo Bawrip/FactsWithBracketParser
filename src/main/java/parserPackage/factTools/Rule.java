@@ -1,16 +1,16 @@
 package parserPackage.factTools;
 
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Set;
+import javax.xml.bind.annotation.*;
+import java.util.TreeSet;
 
 //класс, в котором хранится правило и факт, который из этого правила следует
-@XmlRootElement
+@XmlRootElement(name = "Rule")
 public class Rule {
+
     @XmlAnyElement(lax = true)
     private JExpression expression;
-    @XmlElement
+
+    @XmlElement(name = "ResultFact")
     private String fact;
 
     public Rule() {
@@ -30,7 +30,7 @@ public class Rule {
         return fact;
     }
 
-    public boolean evaluateRule(Set<String> facts) {
+    public boolean evaluateRule(TreeSet<String> facts) {
         return expression.evaluate(facts);
     }
 }

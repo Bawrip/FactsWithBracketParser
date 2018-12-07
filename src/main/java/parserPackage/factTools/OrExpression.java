@@ -5,26 +5,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
-@XmlRootElement
+@XmlRootElement(name = "Or")
 public class OrExpression implements JExpression {
+
     @XmlAnyElement(lax = true)
-    private List<JExpression> expressions;
+    private ArrayList<JExpression> expressions;
 
     public OrExpression() {
 
     }
 
-    public OrExpression(List<JExpression> expressions) {
+    public OrExpression(ArrayList<JExpression> expressions) {
         this.expressions = new ArrayList<>(expressions);
     }
 
-    public List<JExpression> getExpressions() {
+    public ArrayList<JExpression> getExpressions() {
         return expressions;
     }
 
     @Override
-    public boolean evaluate(Set<String> facts) {
+    public boolean evaluate(TreeSet<String> facts) {
         for (JExpression expression : expressions) {
             if (expression.evaluate(facts))
                 return true;

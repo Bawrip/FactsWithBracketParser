@@ -1,5 +1,6 @@
 package parserPackage;
 
+import org.xml.sax.SAXException;
 import parserPackage.exceptions.ParserException;
 import parserPackage.factTools.Model;
 

@@ -4,8 +4,8 @@ import parserPackage.Main;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class DatabaseTest {
-    private String testPropDir = "target\\test-classes\\properties\\";
+public class PositiveTextReadTest {
+    private String testTxtDir = "target\\test-classes\\txt\\";
 
     private static ByteArrayOutputStream buff;
 
@@ -26,40 +26,41 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testZero() {
-        String args[] = {"-d"};
+    public void noFilenameTest() {
+        String args[] = {};
 
         Main.main(args);
         Assertions.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
-    public void testDb1() {
-        String args[] = {"-d", testPropDir + "dbTest1.properties"};
+    public void positive1() {
+        String args[] = {"-t", testTxtDir + "positive1.txt"};
 
         Main.main(args);
         Assertions.assertEquals("A, B, C, D, F, M, T, Y\r\n", buff.toString());
     }
 
+
     @Test
-    public void testDb2() {
-        String args[] = {"-d", testPropDir + "dbTest2.properties"};
+    public void positive2() {
+        String args[] = {"-t", testTxtDir + "positive2.txt"};
 
         Main.main(args);
         Assertions.assertEquals("Aa2, Al, E, KE, Y2, Y3, Z\r\n", buff.toString());
     }
 
     @Test
-    public void testDb3() {
-        String args[] = {"-d", testPropDir + "dbTest3.properties"};
+    public void positive3() {
+        String args[] = {"-t", testTxtDir + "positive3.txt"};
 
         Main.main(args);
         Assertions.assertEquals("A, B, C, D, E, F, L, M, T, Y\r\n", buff.toString());
     }
 
     @Test
-    public void testDb4() {
-        String args[] = {"-d", testPropDir + "dbTest4.properties"};
+    public void positive4() {
+        String args[] = {"-t", testTxtDir + "positive4.txt"};
 
         Main.main(args);
         Assertions.assertEquals("A, B, C, D, E, O, R, U, V\r\n", buff.toString());

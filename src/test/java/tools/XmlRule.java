@@ -10,8 +10,13 @@ import java.util.List;
 public class XmlRule {
 
 
-    @XmlAnyElement
-    private List<XmlExpression> expressions;
+    @XmlElements({
+            @XmlElement(name = "and", type = XmlAndExpression.class),
+            @XmlElement(name = "or", type = XmlOrExpression.class),
+            @XmlElement(name = "fact", type = XmlFactExpression.class),
+    })
+    private XmlExpression expressions;
+
     @XmlElement
     private String fact;
 
@@ -19,7 +24,10 @@ public class XmlRule {
 
     }
 
-    public XmlRule(List<XmlExpression> expressions, String fact) {
+    public String prf() {
+        return fact;
+    }
+    public XmlRule(XmlExpression expressions, String fact) {
         this.expressions = expressions;
         this.fact = fact;
     }

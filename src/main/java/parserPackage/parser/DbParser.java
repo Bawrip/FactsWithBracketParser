@@ -60,7 +60,7 @@ public class DbParser implements Parser {
     }
 
     private JExpression parseExpression(DbExpression dbExpression) throws ParserException {
-        List<JExpression> jExpressions = new ArrayList<>();
+        ArrayList<JExpression> jExpressions = new ArrayList<>();
 
         if (dbExpression.getType() == ExpressionTypes.Fact) {
             return new FactExpression(dbExpression.getFact());

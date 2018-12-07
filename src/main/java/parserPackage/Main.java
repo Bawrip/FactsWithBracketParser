@@ -53,7 +53,7 @@ public class Main {
                 .longOpt("text")
                 .argName("textPath")
                 .hasArg()
-                .desc("Argument is a path of text file, which contains rules and facts. Extracts the facts from the rules and deduce them.")
+                .desc("Argument is a path of text file that contains rules and facts. Reveals new facts from the rules and deduce them.")
                 .build());
 
         optionGroup.addOption(Option.builder("d")
@@ -61,7 +61,7 @@ public class Main {
                 .argName("propertyPath")
                 .hasArg()
                 .desc("Argument is a path of property file, which contains url, login, password for connecting to the database." +
-                "Reads the database. Extracts the facts from the rules and deduce them.")
+                "Reads the database. Reveals new facts from the rules and deduce them.")
                 .build());
 
         optionGroup.addOption(Option.builder("td")
@@ -76,7 +76,7 @@ public class Main {
                 .longOpt("xml")
                 .argName("xmlPath")
                 .hasArg()
-                .desc("Argument is a path of xml file, which contains rules and facts. Extracts the facts from the rules and deduce them.")
+                .desc("Argument is a path of xml file, which contains rules and facts. Reveals new facts from the rules and deduce them.")
                 .build());
 
         optionGroup.addOption(Option.builder("tx")

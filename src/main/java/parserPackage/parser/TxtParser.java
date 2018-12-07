@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 //если файл корректный -> найденные правила и факты заносятся в объект Facts
 public class TxtParser implements Parser{
     private static final String SEPARATOR = "----------------------------------------------------------------";
-    private static final Pattern FACT_PATTERN = Pattern.compile("^[a-zA-Z]+[a-zA-Z0-9_]*$");
+    private static final Pattern FACT_PATTERN = Pattern.compile("^_*[a-zA-Z]+[a-zA-Z0-9_]*$");
 
 
     private int line;

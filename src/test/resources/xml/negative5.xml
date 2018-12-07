@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Model xmlns="http://www.amazanov.com/model/XMLschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.amazanov.com/model/XMLschema ModelSchema.1.0.xsd">    <Rules>
+        <Rule>
+            <Or>
+                <And>
+                    <Fact value="M"/>
+                    <Fact value="E"/>
+                </And>
+                <And>
+                    <Fact value="Y"/>
+                    <Fact value="T"/>
+                </And>
+            </Or>
+            <ResultFact>F</ResultFact>
+        </Rule>
+    </Rules>
+    <!-- No 'KnownFacts' element
+    <KnownFacts>
+        <Fact>A</Fact>
+        <Fact>B</Fact>
+        <Fact>C</Fact>
+        <Fact>D</Fact>
+    </KnownFacts>-->
+</Model>

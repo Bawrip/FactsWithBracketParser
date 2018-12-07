@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="And" >
+        <xs:sequence>
+            <xs:any maxOccurs="unbounded" minOccurs="1" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Or">
+        <xs:sequence>
+            <xs:any maxOccurs="unbounded" minOccurs="1" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Fact">
+        <xs:attribute name="value" type="FactPattern"/>
+    </xs:complexType>
+
+    <xs:complexType name="Rule">
+        <xs:sequence>
+            <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:element name="And" type="And"/>
+                <xs:element name="Or" type="Or"/>
+                <xs:element name="Fact" type="Fact"/>
+            </xs:choice>
+            <xs:element name="ResultFact" type="FactPattern"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Rules">
+        <xs:sequence maxOccurs="unbounded" minOccurs="1">
+            <xs:element name="Rule" type="Rule"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Model">
+        <xs:sequence>
+            <xs:element name="Rules" maxOccurs="1" minOccurs="1" type="Rules"/>
+            <xs:element name="KnownFacts" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Fact" minOccurs="1" maxOccurs="unbounded" type="FactPattern"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="FactPattern">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z]+[a-zA-Z0-9_]*"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="Model" type="Model"/>
+</xs:schema>
+

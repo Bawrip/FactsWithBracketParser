@@ -1,12 +1,23 @@
 package parserPackage.factTools;
 
+import javax.xml.bind.annotation.*;
 import java.util.*;
 
 //класс объединяющий правила и факты
+
+@XmlRootElement(name = "Model")
 public class Model {
 
+    @XmlAnyElement(lax = true)
+    @XmlElementWrapper(name = "Rules")
     private LinkedList<Rule> rules;//коллекция правил
-    private Set<String> facts;//коллекция фактов
+    @XmlElement(name = "Fact")
+    @XmlElementWrapper(name = "KnownFacts")
+    private TreeSet<String> facts;//коллекция фактов
+
+    public Model() {
+
+    }
 
     public Model(LinkedList<Rule> rules, String[] facts) {
         this.rules = rules;
@@ -18,7 +29,7 @@ public class Model {
     }
 
 
-    public Set<String> getFacts() {
+    public TreeSet<String> getFacts() {
         return facts;
     }
 

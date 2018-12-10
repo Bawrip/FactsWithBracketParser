@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema xmlns="http://www.amazanov.com/model/XMLschema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.amazanov.com/model/XMLschema" elementFormDefault="qualified">
+	<xs:complexType name="And">
+		<xs:sequence>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:element name="Fact" type="Fact"/>
+				<xs:element name="And" type="And"/>
+				<xs:element name="Or" type="Or"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Or">
+		<xs:sequence>
+			<xs:choice minOccurs="2" maxOccurs="unbounded">
+				<xs:element name="Fact" type="Fact"/>
+				<xs:element name="And" type="And"/>
+				<xs:element name="Or" type="Or"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Fact">
+		<xs:attribute name="value" type="FactPattern"/>
+	</xs:complexType>
+	
+	<xs:complexType name="Rule">
+		<xs:sequence>
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element name="And" type="And"/>
+				<xs:element name="Or" type="Or"/>
+				<xs:element name="Fact" type="Fact"/>
+			</xs:choice>
+			<xs:element name="ResultFact" type="FactPattern"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Rules">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="Rule" type="Rule"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Model">
+		<xs:sequence>
+			<xs:element name="Rules" type="Rules" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="KnownFacts" minOccurs="1" maxOccurs="1">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Fact" type="FactPattern" minOccurs="1" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="FactPattern">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="_*[a-zA-Z]+[a-zA-Z0-9_]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:element name="Model" type="Model"/>
+	
+</xs:schema>

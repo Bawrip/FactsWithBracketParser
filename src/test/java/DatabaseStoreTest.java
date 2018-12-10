@@ -1,50 +1,50 @@
 
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import parserPackage.Main;
-import parserPackage.dbTools.DbExpression;
 import parserPackage.dbTools.mapper.DatabaseTruncateMapper;
 import parserPackage.factTools.Model;
 import parserPackage.parser.DbParser;
-import parserPackage.parser.Engine;
 import parserPackage.parser.TxtParser;
 
 
 import java.io.*;
-import java.sql.Connection;
 import java.util.*;
 
-public class DatabaseInsertTest {
-    private String testTxtDir = "target\\test-classes\\Txt\\";
+public class DatabaseStoreTest {
+    private String testTxtDir = "target\\test-classes\\txt\\";
     private String testPropDir = "target\\test-classes\\properties\\";
 
-    private String usageMessage = "usage: App [-d <propertyPath> | -i <textPath propertyPath> | -t <textPath>]\r\n" +
-            " -d,--database <propertyPath>          Argument is a path of property file, which contains url, login, password for\r\n" +
-            "                                       connecting to the database.Reads the database. Extracts the facts from the rules\r\n" +
-            "                                       and deduce them.\r\n" +
-            " -i,--insert <textPath propertyPath>   First argument is a path of text file, second is a path of property file. Reads\r\n" +
-            "                                       text into a database. Reads the database\r\n" +
-            " -t,--text <textPath>                  Argument is a path of text file, which contains rules and facts. Extracts the\r\n" +
-            "                                       facts from the rules and deduce them.\r\n";
+    private static ByteArrayOutputStream buff;
+
+    @BeforeClass
+    public static void setOut() {
+        buff = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(buff));
+    }
+
+    @Before
+    public void resetBuff() {
+        buff.reset();
+    }
+
+    @AfterClass
+    public static void removeOut(){
+        System.setOut(System.out);
+    }
 
     @Test
     public void testOneStore() {
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
-
         String txtPath = testTxtDir + "positive1.txt";
         String dbPath = testPropDir + "dbInsertTest.properties";
 
-        String iArgs[] = {"-i", txtPath, dbPath};
+        String iArgs[] = {"-td", txtPath, dbPath};
         Main.main(iArgs);
 
-        Assert.assertEquals("Facts and Rules inserted into database successfully.\r\n", buff.toString());
+        Assert.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
         TxtParser txtParser = new TxtParser();
         DbParser dbParser = new DbParser();
 
@@ -74,12 +74,9 @@ public class DatabaseInsertTest {
     public void testMultiStore() {
         String dbPath = testPropDir + "dbInsertTest.properties";
 
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
-
-        Main.main(new String[] {"-i", testTxtDir + "positive1.txt", dbPath});
-        Main.main(new String[] {"-i", testTxtDir + "positive2.txt", dbPath});
-        Main.main(new String[] {"-i", testTxtDir + "positive3.txt", dbPath});
+        Main.main(new String[] {"-td", testTxtDir + "positive1.txt", dbPath});
+        Main.main(new String[] {"-td", testTxtDir + "positive2.txt", dbPath});
+        Main.main(new String[] {"-td", testTxtDir + "positive3.txt", dbPath});
 
         TxtParser txtParser = new TxtParser();
         DbParser dbParser = new DbParser();
@@ -108,26 +105,20 @@ public class DatabaseInsertTest {
 
     @Test
     public void testInsertDb2() {
-        String args[] = {"-i", "sometext"};
-
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
+        String args[] = {"-td", "sometext"};
 
         Main.main(args);
 
-        Assert.assertEquals(usageMessage, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
     public void testInsertDb3() {
-        String args[] = {"-i"};
-
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buff));
+        String args[] = {"-td"};
 
         Main.main(args);
 
-        Assert.assertEquals(usageMessage, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     private void truncateDatabase(String config) throws IOException {

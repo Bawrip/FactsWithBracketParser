@@ -1,10 +1,17 @@
 package parserPackage.factTools;
 
-import java.util.Set;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.TreeSet;
 
+@XmlRootElement(name = "Fact")
 public class FactExpression implements JExpression {
+    @XmlAttribute(name = "value")
     private String fact;
 
+    public FactExpression() {
+
+    }
     public FactExpression(String fact) {
         this.fact = fact;
     }
@@ -14,7 +21,7 @@ public class FactExpression implements JExpression {
     }
 
     @Override
-    public boolean evaluate(Set<String> facts) {
+    public boolean evaluate(TreeSet<String> facts) {
         return facts.contains(fact);
     }
 }

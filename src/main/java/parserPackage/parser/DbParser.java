@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
 public class DbParser implements Parser {
@@ -60,7 +59,7 @@ public class DbParser implements Parser {
     }
 
     private JExpression parseExpression(DbExpression dbExpression) throws ParserException {
-        List<JExpression> jExpressions = new ArrayList<>();
+        ArrayList<JExpression> jExpressions = new ArrayList<>();
 
         if (dbExpression.getType() == ExpressionTypes.Fact) {
             return new FactExpression(dbExpression.getFact());
@@ -73,9 +72,7 @@ public class DbParser implements Parser {
 
         if (dbExpression.getType() == ExpressionTypes.Or) {
             return new OrExpression(jExpressions);
-        }
-
-        if (dbExpression.getType() == ExpressionTypes.And) {
+        } else if (dbExpression.getType() == ExpressionTypes.And) {
             return new AndExpression(jExpressions);
         }
 

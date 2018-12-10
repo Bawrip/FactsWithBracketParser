@@ -1,7 +1,7 @@
 package parserPackage.factTools;
 
-import java.util.Set;
+import java.util.TreeSet;
 
 public interface JExpression {
-    boolean evaluate(Set<String> facts);
+    boolean evaluate(TreeSet<String> facts);
 }

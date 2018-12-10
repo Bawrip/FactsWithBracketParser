@@ -3,7 +3,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.jupiter.api.*;
+import org.junit.*;
 import parserPackage.Main;
 import parserPackage.dbTools.mapper.DatabaseTruncateMapper;
 import parserPackage.factTools.Model;
@@ -20,18 +20,18 @@ public class DatabaseStoreTest {
 
     private static ByteArrayOutputStream buff;
 
-    @BeforeAll
+    @BeforeClass
     public static void setOut() {
         buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
     }
 
-    @BeforeEach
+    @Before
     public void resetBuff() {
         buff.reset();
     }
 
-    @AfterAll
+    @AfterClass
     public static void removeOut(){
         System.setOut(System.out);
     }
@@ -44,7 +44,7 @@ public class DatabaseStoreTest {
         String iArgs[] = {"-td", txtPath, dbPath};
         Main.main(iArgs);
 
-        Assertions.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
+        Assert.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
         TxtParser txtParser = new TxtParser();
         DbParser dbParser = new DbParser();
 
@@ -59,7 +59,7 @@ public class DatabaseStoreTest {
             dbModel.processRules();
 
 
-            Assertions.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -92,7 +92,7 @@ public class DatabaseStoreTest {
             dbModel.processRules();
 
 
-            Assertions.assertEquals(txtModel.getFacts(), dbModel.getFacts());
+            Assert.assertEquals(txtModel.getFacts(), dbModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -109,7 +109,7 @@ public class DatabaseStoreTest {
 
         Main.main(args);
 
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class DatabaseStoreTest {
 
         Main.main(args);
 
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     private void truncateDatabase(String config) throws IOException {

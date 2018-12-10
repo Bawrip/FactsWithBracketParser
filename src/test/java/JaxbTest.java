@@ -1,6 +1,6 @@
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.Test;
 import tools.*;
 
 import javax.xml.XMLConstants;

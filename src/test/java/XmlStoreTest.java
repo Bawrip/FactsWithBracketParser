@@ -1,4 +1,5 @@
-import org.junit.jupiter.api.*;
+
+import org.junit.*;
 import parserPackage.Main;
 import parserPackage.factTools.*;
 import parserPackage.parser.TxtParser;
@@ -12,18 +13,18 @@ public class XmlStoreTest {
 
     private static ByteArrayOutputStream buff;
 
-    @BeforeAll
+    @BeforeClass
     public static void setOut() {
         buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
     }
 
-    @BeforeEach
+    @Before
     public void resetBuff() {
         buff.reset();
     }
 
-    @AfterAll
+    @AfterClass
     public static void removeOut(){
         System.setOut(System.out);
     }
@@ -36,7 +37,7 @@ public class XmlStoreTest {
         String iArgs[] = {"-tx", txtPath, xmlPath};
         Main.main(iArgs);
 
-        Assertions.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
+        Assert.assertEquals("Facts and Rules stored successfully.\r\n", buff.toString());
         TxtParser txtParser = new TxtParser();
         XmlParser xmlParser = new XmlParser();
 
@@ -51,7 +52,7 @@ public class XmlStoreTest {
             xmlModel.processRules();
 
 
-            Assertions.assertEquals(txtModel.getFacts(), xmlModel.getFacts());
+            Assert.assertEquals(txtModel.getFacts(), xmlModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -79,7 +80,7 @@ public class XmlStoreTest {
             xmlModel.processRules();
 
 
-            Assertions.assertEquals(txtModel.getFacts(), xmlModel.getFacts());
+            Assert.assertEquals(txtModel.getFacts(), xmlModel.getFacts());
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -91,7 +92,7 @@ public class XmlStoreTest {
 
         Main.main(args);
 
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
@@ -100,6 +101,6 @@ public class XmlStoreTest {
 
         Main.main(args);
 
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 }

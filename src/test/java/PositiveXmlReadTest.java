@@ -1,5 +1,9 @@
 
-import org.junit.jupiter.api.*;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import parserPackage.Main;
 
 import java.io.ByteArrayOutputStream;
@@ -10,18 +14,18 @@ public class PositiveXmlReadTest {
     private static ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
 
-    @BeforeAll
+    @BeforeClass
     public static void setOut() {
         buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
     }
 
-    @BeforeEach
+    @Before
     public void resetBuff() {
         buff.reset();
     }
 
-    @AfterAll
+    @BeforeClass
     public static void removeOut(){
         System.setOut(System.out);
     }
@@ -31,7 +35,7 @@ public class PositiveXmlReadTest {
         String args[] = {"-x"};
 
         Main.main(args);
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
@@ -40,7 +44,7 @@ public class PositiveXmlReadTest {
 
         Main.main(args);
         String expected = "A, B, C, D, F, M, T, Y\r\n";
-        Assertions.assertEquals(expected, buff.toString());
+        Assert.assertEquals(expected, buff.toString());
     }
 
     @Test
@@ -48,7 +52,7 @@ public class PositiveXmlReadTest {
         String args[] = {"-x", testXmlDir + "positive2.xml"};
 
         Main.main(args);
-        Assertions.assertEquals("Aa2, Al, E, KE, Y2, Y3, Z\r\n", buff.toString());
+        Assert.assertEquals("Aa2, Al, E, KE, Y2, Y3, Z\r\n", buff.toString());
     }
 
     @Test
@@ -56,7 +60,7 @@ public class PositiveXmlReadTest {
         String args[] = {"-x", testXmlDir + "positive3.xml"};
 
         Main.main(args);
-        Assertions.assertEquals("A, B, C, D, E, F, L, M, T, Y\r\n", buff.toString());
+        Assert.assertEquals("A, B, C, D, E, F, L, M, T, Y\r\n", buff.toString());
     }
 
     @Test
@@ -64,6 +68,6 @@ public class PositiveXmlReadTest {
         String args[] = {"-x", testXmlDir + "positive4.xml"};
 
         Main.main(args);
-        Assertions.assertEquals("A, B, C, D, E, O, R, U, V\r\n", buff.toString());
+        Assert.assertEquals("A, B, C, D, E, O, R, U, V\r\n", buff.toString());
     }
 }

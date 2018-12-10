@@ -1,4 +1,4 @@
-import org.junit.jupiter.api.*;
+import org.junit.*;
 import parserPackage.Main;
 
 import java.io.ByteArrayOutputStream;
@@ -9,18 +9,18 @@ public class PositiveTextReadTest {
 
     private static ByteArrayOutputStream buff;
 
-    @BeforeAll
+    @BeforeClass
     public static void setOut() {
         buff = new ByteArrayOutputStream();
         System.setOut(new PrintStream(buff));
     }
 
-    @BeforeEach
+    @Before
     public void resetBuff() {
         buff.reset();
     }
 
-    @AfterAll
+    @AfterClass
     public static void removeOut(){
         System.setOut(System.out);
     }
@@ -30,7 +30,7 @@ public class PositiveTextReadTest {
         String args[] = {};
 
         Main.main(args);
-        Assertions.assertEquals(UsageMessage.message, buff.toString());
+        Assert.assertEquals(UsageMessage.message, buff.toString());
     }
 
     @Test
@@ -38,7 +38,7 @@ public class PositiveTextReadTest {
         String args[] = {"-t", testTxtDir + "positive1.txt"};
 
         Main.main(args);
-        Assertions.assertEquals("A, B, C, D, F, M, T, Y\r\n", buff.toString());
+        Assert.assertEquals("A, B, C, D, F, M, T, Y\r\n", buff.toString());
     }
 
 
@@ -47,7 +47,7 @@ public class PositiveTextReadTest {
         String args[] = {"-t", testTxtDir + "positive2.txt"};
 
         Main.main(args);
-        Assertions.assertEquals("Aa2, Al, E, KE, Y2, Y3, Z\r\n", buff.toString());
+        Assert.assertEquals("Aa2, Al, E, KE, Y2, Y3, Z\r\n", buff.toString());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class PositiveTextReadTest {
         String args[] = {"-t", testTxtDir + "positive3.txt"};
 
         Main.main(args);
-        Assertions.assertEquals("A, B, C, D, E, F, L, M, T, Y\r\n", buff.toString());
+        Assert.assertEquals("A, B, C, D, E, F, L, M, T, Y\r\n", buff.toString());
     }
 
     @Test
@@ -63,6 +63,6 @@ public class PositiveTextReadTest {
         String args[] = {"-t", testTxtDir + "positive4.txt"};
 
         Main.main(args);
-        Assertions.assertEquals("A, B, C, D, E, O, R, U, V\r\n", buff.toString());
+        Assert.assertEquals("A, B, C, D, E, O, R, U, V\r\n", buff.toString());
     }
 }

@@ -33,14 +33,7 @@
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/jaxb2-maven-plugin -->
-        <dependency>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jaxb2-maven-plugin</artifactId>
-            <version>2.4</version>
-        </dependency>
-
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -112,12 +105,6 @@
                                 <artifactItem>
                                     <groupId>junit</groupId>
                                     <artifactId>junit</artifactId>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}\libs\</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>jaxb2-maven-plugin</artifactId>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}\libs\</outputDirectory>
                                 </artifactItem>

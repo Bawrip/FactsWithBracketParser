@@ -1,16 +1,10 @@
 package parserPackage;
 
-import org.xml.sax.SAXException;
 import parserPackage.factTools.*;
-
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import java.io.File;
-import java.net.URL;
 
 public class XmlFiller implements Filler {
     public XmlFiller() {
